@@ -1,0 +1,133 @@
+{
+  "name": "tele chat bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4e923931-4439-4bcb-b773-28789fdd671d",
+      "name": "Telegram Trigger",
+      "webhookId": "afd1a063-aa30-4558-bfa6-927c14c84146",
+      "credentials": {
+        "telegramApi": {
+          "id": "PUSYfgBPAaEhl9As",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "342e6803-02fb-4ac2-8087-849bc243e1ae",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        80,
+        224
+      ],
+      "id": "abb35e99-b543-4742-863f-333123f80961",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "sdx5NTJzgBObKbss",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "1977c41f-ff6e-4efd-aa25-07a49f7c38d8",
+      "name": "Send a text message",
+      "webhookId": "9e46104e-a26f-4f04-997e-77967ce9606b",
+      "credentials": {
+        "telegramApi": {
+          "id": "PUSYfgBPAaEhl9As",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e9f2d1f8-2bc9-473a-bf25-b4153b66ada5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f34b7eb0d3cf0526a3c85f373143b1495ee917df7033095f85e1a21dbf63dbef"
+  },
+  "id": "uNBBX0KJSli9U1q9",
+  "tags": []
+}
